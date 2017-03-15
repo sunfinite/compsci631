@@ -129,6 +129,7 @@ let rec check_type (e: exp) (env: 'a list) (tenv: 'a list): typ =
       | _ -> failwith "fix should return an expression of the same type as its argument"
     )
   | App (e1, e2) -> (
+      let _ = pp_typ Format.std_formatter (check e1) in
       match (check e1) with
       | TFun (arg_typ, ret_typ) -> (
           match (arg_typ, (check e2)) with
@@ -149,7 +150,7 @@ let rec check_type (e: exp) (env: 'a list) (tenv: 'a list): typ =
           (* failwith "how are we getting int"*)
       | _ -> failwith "LHS of function application should have type function"
     )
-  | Id id -> List.assoc id env
+  | Id id -> let _ = printf "%s" id in List.assoc id env
   | Empty typ -> (
       match typ with
       | TId id ->
@@ -233,8 +234,8 @@ let rec check_type (e: exp) (env: 'a list) (tenv: 'a list): typ =
 let _ =
   let filename : string = Sys.argv.(1) in
   let program : exp = from_file filename in
-  (* let _ = pp_exp Format.std_formatter program in*)
-  (* let _ = printf "\n\n" in*)
+  let _ = pp_exp Format.std_formatter program in
+  let _ = printf "\n\n" in
   let res = check_type program [] [] in
   let _ = pp_typ Format.std_formatter res in
   printf "\n\n"
